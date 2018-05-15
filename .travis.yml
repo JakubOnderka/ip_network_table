@@ -1,0 +1,35 @@
+sudo: false
+language: rust
+cache: cargo
+
+addons:
+  apt:
+    packages:
+      - libcurl4-openssl-dev
+      - libelf-dev
+      - libdw-dev
+      - binutils-dev
+      - cmake
+    sources:
+      - kalakris-cmake
+
+rust:
+  - nightly
+  - beta
+  - stable
+
+before_script:
+  - |
+      which cargo-coveralls || cargo install cargo-travis &&
+      export PATH=$HOME/.cargo/bin:$PATH
+
+script:
+  - cargo check
+  - cargo test
+
+after_success:
+  - cargo coveralls
+
+env:
+  global:
+    - TRAVIS_CARGO_NIGHTLY_FEATURE=""

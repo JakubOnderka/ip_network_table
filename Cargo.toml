@@ -1,0 +1,21 @@
+[package]
+name = "ip_network_table"
+version = "0.1.0"
+authors = ["Jakub Onderka <ahoj@jakubonderka.cz>"]
+license = "BSD-2-Clause"
+keywords = ["ip", "ipv4", "ipv6", "network", "address"]
+categories = ["network-programming", "data-structures"]
+readme = "README.md"
+repository = "https://github.com/JakubOnderka/ip_network_table"
+homepage = "https://github.com/JakubOnderka/ip_network_table"
+documentation = "https://docs.rs/ip_network_table"
+description = """
+IPv4 and IPv6 network fast lookup table.
+"""
+
+[badges]
+travis-ci = { repository = "JakubOnderka/ip_network_table" }
+
+[dependencies]
+ip_network = "0.2.0"
+treebitmap = "*"
