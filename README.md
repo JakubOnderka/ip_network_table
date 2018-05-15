@@ -3,9 +3,9 @@ ip_network_table
 
 IPv4 and IPv6 network fast lookup table.
 
-[![Build Status](https://travis-ci.org/JakubOnderka/ip_network_table.svg?branch=master)](https://travis-ci.org/JakubOnderka/ip_network)
-[![Coverage Status](https://coveralls.io/repos/github/JakubOnderka/ip_network_table/badge.svg?branch=master)](https://coveralls.io/github/JakubOnderka/ip_network?branch=master)
-[![Crates.io](https://img.shields.io/crates/v/ip_network_table.svg)](https://crates.io/crates/ip_network)
+[![Build Status](https://travis-ci.org/JakubOnderka/ip_network_table.svg?branch=master)](https://travis-ci.org/JakubOnderka/ip_network_table)
+[![Coverage Status](https://coveralls.io/repos/github/JakubOnderka/ip_network_table/badge.svg?branch=master)](https://coveralls.io/github/JakubOnderka/ip_network_table?branch=master)
+[![Crates.io](https://img.shields.io/crates/v/ip_network_table.svg)](https://crates.io/crates/ip_network_table)
 
 - [Documentation](https://docs.rs/ip_network_table)
 
