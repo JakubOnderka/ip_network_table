@@ -31,9 +31,9 @@ impl<T> Table<T> {
     }
 
     /// Returns the number of elements in the table.
-    /*pub fn len(&self) -> (usize, usize) {
+    pub fn len(&self) -> (usize, usize) {
         (self.ipv4.len(), self.ipv6.len())
-    }*/
+    }
 
     /// Insert a value for the IpNetwork. If prefix existed previously, the old value is returned.
     ///
