@@ -8,7 +8,7 @@ extern crate treebitmap;
 
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 use ip_network::{IpNetwork, Ipv4Network, Ipv6Network};
-use treebitmap::{IpLookupTable, IpLookupTableOps};
+use treebitmap::IpLookupTable;
 
 /// Table holding IPv4 and IPv6 network prefixes.
 pub struct Table<T> {

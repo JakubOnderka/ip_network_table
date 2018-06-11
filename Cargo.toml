@@ -18,4 +18,4 @@ travis-ci = { repository = "JakubOnderka/ip_network_table" }
 
 [dependencies]
 ip_network = "0.2.0"
-treebitmap = { path = "treebitmap", version = "0.2.2" }
+treebitmap = "0.3.1"
