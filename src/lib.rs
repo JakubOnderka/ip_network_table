@@ -60,13 +60,13 @@ impl<T> Table<T> {
     /// ```
     pub fn insert<N: Into<IpNetwork>>(&mut self, network: N, data: T) -> Option<T> {
         match network.into() {
-            IpNetwork::V4(ipv4_network) => self.insert_ip4(ipv4_network, data),
-            IpNetwork::V6(ipv6_network) => self.insert_ip6(ipv6_network, data),
+            IpNetwork::V4(ipv4_network) => self.insert_ipv4(ipv4_network, data),
+            IpNetwork::V6(ipv6_network) => self.insert_ipv6(ipv6_network, data),
         }
     }
 
     /// Specific version of `insert` for IPv4 network.
-    pub fn insert_ip4(&mut self, network: Ipv4Network, data: T) -> Option<T> {
+    pub fn insert_ipv4(&mut self, network: Ipv4Network, data: T) -> Option<T> {
         self.ipv4.insert(
             network.get_network_address(),
             network.get_netmask() as u32,
@@ -75,7 +75,7 @@ impl<T> Table<T> {
     }
 
     /// Specific version of `insert` for IPv6 network.
-    pub fn insert_ip6(&mut self, network: Ipv6Network, data: T) -> Option<T> {
+    pub fn insert_ipv6(&mut self, network: Ipv6Network, data: T) -> Option<T> {
         self.ipv6.insert(
             network.get_network_address(),
             network.get_netmask() as u32,
