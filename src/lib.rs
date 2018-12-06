@@ -68,8 +68,8 @@ impl<T> Table<T> {
     /// Specific version of `insert` for IPv4 network.
     pub fn insert_ipv4(&mut self, network: Ipv4Network, data: T) -> Option<T> {
         self.ipv4.insert(
-            network.get_network_address(),
-            network.get_netmask() as u32,
+            network.network_address(),
+            network.netmask() as u32,
             data,
         )
     }
@@ -77,8 +77,8 @@ impl<T> Table<T> {
     /// Specific version of `insert` for IPv6 network.
     pub fn insert_ipv6(&mut self, network: Ipv6Network, data: T) -> Option<T> {
         self.ipv6.insert(
-            network.get_network_address(),
-            network.get_netmask() as u32,
+            network.network_address(),
+            network.netmask() as u32,
             data,
         )
     }
@@ -116,16 +116,16 @@ impl<T> Table<T> {
     /// Specific version of `remove` for IPv4 network.
     pub fn remove_ipv4(&mut self, network: Ipv4Network) -> Option<T> {
         self.ipv4.remove(
-            network.get_network_address(),
-            network.get_netmask() as u32,
+            network.network_address(),
+            network.netmask() as u32,
         )
     }
 
     /// Specific version of `remove` for IPv6 network.
     pub fn remove_ipv6(&mut self, network: Ipv6Network) -> Option<T> {
         self.ipv6.remove(
-            network.get_network_address(),
-            network.get_netmask() as u32,
+            network.network_address(),
+            network.netmask() as u32,
         )
     }
 
@@ -164,16 +164,16 @@ impl<T> Table<T> {
     /// Specific version of `exact_match` for IPv4.
     pub fn exact_match_ipv4(&self, network: Ipv4Network) -> Option<&T> {
         self.ipv4.exact_match(
-            network.get_network_address(),
-            network.get_netmask() as u32,
+            network.network_address(),
+            network.netmask() as u32,
         )
     }
 
     /// Specific version of `exact_match` for IPv6.
     pub fn exact_match_ipv6(&self, network: Ipv6Network) -> Option<&T> {
         self.ipv6.exact_match(
-            network.get_network_address(),
-            network.get_netmask() as u32,
+            network.network_address(),
+            network.netmask() as u32,
         )
     }
 
