@@ -18,5 +18,5 @@ edition = "2018"
 travis-ci = { repository = "JakubOnderka/ip_network_table" }
 
 [dependencies]
-ip_network = "0.2.0"
+ip_network = "0.2.2"
 treebitmap = "0.3.1"
