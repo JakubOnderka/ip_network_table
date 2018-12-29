@@ -3,9 +3,6 @@
 //! Currently, it uses `ip_network` crate, that provides IP network data structure and
 //! `treebitmap` as backend, that provides fast lookup times, and a small memory footprint.
 //! Backend can be changed in future releases.
-extern crate ip_network;
-extern crate treebitmap;
-
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 use ip_network::{IpNetwork, Ipv4Network, Ipv6Network};
 use treebitmap::IpLookupTable;
@@ -288,7 +285,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
 
 #[cfg(test)]
 mod tests {
-    use Table;
+    use crate::Table;
     use std::net::{Ipv4Addr, Ipv6Addr};
     use ip_network::{Ipv4Network, Ipv6Network};
 
