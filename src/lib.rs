@@ -46,7 +46,7 @@ impl<T> Table<T> {
     ///
     /// # fn main() {
     /// let mut table: Table<&str> = Table::new();
-    /// let network = Ipv6Network::from(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
+    /// let network = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
     ///
     /// assert_eq!(table.insert(network.clone(), "foo"), None);
     /// // Insert duplicate
@@ -94,7 +94,7 @@ impl<T> Table<T> {
     ///
     /// # fn main() {
     /// let mut table: Table<&str> = Table::new();
-    /// let network = Ipv6Network::from(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
+    /// let network = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
     ///
     /// assert_eq!(table.insert(network.clone(), "foo"), None);
     /// // Remove network from table
@@ -141,8 +141,8 @@ impl<T> Table<T> {
     ///
     /// # fn main() {
     /// let mut table: Table<&str> = Table::new();
-    /// let network_a = Ipv6Network::from(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
-    /// let network_b = Ipv6Network::from(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 128).unwrap();
+    /// let network_a = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
+    /// let network_b = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 128).unwrap();
     ///
     /// assert_eq!(table.insert(network_a.clone(), "foo"), None);
     /// // Get value for network from table
@@ -189,7 +189,7 @@ impl<T> Table<T> {
     ///
     /// # fn main() {
     /// let mut table: Table<&str> = Table::new();
-    /// let network = IpNetwork::from(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
+    /// let network = IpNetwork::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
     /// let ip_address = Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0x1);
     ///
     /// assert_eq!(table.insert(network.clone(), "foo"), None);
@@ -210,7 +210,7 @@ impl<T> Table<T> {
     #[inline]
     pub fn longest_match_ipv4(&self, ip: Ipv4Addr) -> Option<(Ipv4Network, &T)> {
         match self.ipv4.longest_match(ip) {
-            Some((addr, mask, data)) => Some((Ipv4Network::from(addr, mask as u8).unwrap(), data)),
+            Some((addr, mask, data)) => Some((Ipv4Network::new(addr, mask as u8).unwrap(), data)),
             None => None,
         }
     }
@@ -219,7 +219,7 @@ impl<T> Table<T> {
     #[inline]
     pub fn longest_match_ipv6(&self, ip: Ipv6Addr) -> Option<(Ipv6Network, &T)> {
         match self.ipv6.longest_match(ip) {
-            Some((addr, mask, data)) => Some((Ipv6Network::from(addr, mask as u8).unwrap(), data)),
+            Some((addr, mask, data)) => Some((Ipv6Network::new(addr, mask as u8).unwrap(), data)),
             None => None,
         }
     }
@@ -238,9 +238,9 @@ impl<T> Table<T> {
     ///
     /// # fn main() {
     /// let mut table: Table<&str> = Table::new();
-    /// let network_a = Ipv4Network::from(Ipv4Addr::new(192, 168, 0, 0), 24).unwrap();
+    /// let network_a = Ipv4Network::new(Ipv4Addr::new(192, 168, 0, 0), 24).unwrap();
     /// assert_eq!(table.insert(network_a.clone(), "foo"), None);
-    /// let network_b = Ipv6Network::from(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
+    /// let network_b = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
     /// assert_eq!(table.insert(network_b.clone(), "foo"), None);
     ///
     /// let mut iterator = table.iter();
@@ -269,12 +269,12 @@ impl<'a, T> Iterator for Iter<'a, T> {
     fn next(&mut self) -> Option<Self::Item> {
         match self.ipv4.next() {
             Some((addr, mask, data)) => Some((
-                IpNetwork::V4(Ipv4Network::from(addr, mask as u8).unwrap()),
+                IpNetwork::V4(Ipv4Network::new(addr, mask as u8).unwrap()),
                 data,
             )),
             None => match self.ipv6.next() {
                 Some((addr, mask, data)) => Some((
-                    IpNetwork::V6(Ipv6Network::from(addr, mask as u8).unwrap()),
+                    IpNetwork::V6(Ipv6Network::new(addr, mask as u8).unwrap()),
                     data,
                 )),
                 None => None,
@@ -293,11 +293,11 @@ mod tests {
     fn insert_ipv4_ipv6() {
         let mut table: Table<u32> = Table::new();
         table.insert(
-            Ipv4Network::from(Ipv4Addr::new(127, 0, 0, 0), 16).unwrap(),
+            Ipv4Network::new(Ipv4Addr::new(127, 0, 0, 0), 16).unwrap(),
             1,
         );
         table.insert(
-            Ipv6Network::from(Ipv6Addr::new(1, 2, 3, 4, 5, 6, 7, 8), 128).unwrap(),
+            Ipv6Network::new(Ipv6Addr::new(1, 2, 3, 4, 5, 6, 7, 8), 128).unwrap(),
             1,
         );
     }
