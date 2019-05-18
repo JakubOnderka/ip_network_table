@@ -3,6 +3,23 @@
 //! Currently, it uses `ip_network` crate, that provides IP network data structure and
 //! `treebitmap` as backend, that provides fast lookup times, and a small memory footprint.
 //! Backend can be changed in future releases.
+//!
+//! ## Examples
+//!
+//! ```rust
+//! use std::net::{IpAddr, Ipv6Addr};
+//! use ip_network::{IpNetwork, Ipv6Network};
+//! use ip_network_table::IpNetworkTable;
+//!
+//! let mut table = IpNetworkTable::new();
+//! let network = IpNetwork::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
+//! let ip_address = Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0x1);
+//!
+//! assert_eq!(table.insert(network.clone(), "foo"), None);
+//! // Get value for network from table
+//! assert_eq!(table.longest_match(ip_address), Some((network, &"foo")));
+//! ```
+
 use ip_network::{IpNetwork, Ipv4Network, Ipv6Network};
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 use treebitmap::IpLookupTable;
@@ -32,7 +49,7 @@ impl<T> IpNetworkTable<T> {
         (self.ipv4.len(), self.ipv6.len())
     }
 
-    /// Insert a value for the IpNetwork. If prefix existed previously, the old value is returned.
+    /// Insert a value for the `IpNetwork`. If prefix existed previously, the old value is returned.
     ///
     /// # Examples
     ///
@@ -65,7 +82,7 @@ impl<T> IpNetworkTable<T> {
         }
     }
 
-    /// Remove a IpNetwork from table. If prefix existed, the value is returned.
+    /// Remove a `IpNetwork` from table. If prefix existed, the value is returned.
     ///
     /// # Examples
     ///

@@ -37,10 +37,10 @@ and then you can use it like this:
 ```rust
 use std::net::{IpAddr, Ipv6Addr};
 use ip_network::{IpNetwork, Ipv6Network};
-use ip_network_table::Table;
+use ip_network_table::IpNetworkTable;
 
-let mut table: Table<&str> = Table::new();
-let network = IpNetwork::from(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
+let mut table = IpNetworkTable::new();
+let network = IpNetwork::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
 let ip_address = Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0x1);
 
 assert_eq!(table.insert(network.clone(), "foo"), None);
