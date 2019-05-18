@@ -13,7 +13,7 @@ IPv4 and IPv6 network fast lookup table.
 This crate provides storage and retrieval of IPv4 and IPv6 network prefixes.
 
 Currently, it uses [`ip_network`](https://github.com/JakubOnderka/ip_network) crate, that provides IP network data structure and
-fork of `treebitmap` as backend, that provides fast lookup times, and a small memory footprint.
+ [`treebitmap`](https://github.com/hroi/treebitmap) as backend, that provides fast lookup times, and a small memory footprint. Backend can be changed in future releases.
 
 ## Usage
 
@@ -21,11 +21,11 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-ip_network = "0.2"
+ip_network = "0.3"
 ip_network_table = "0.1"
 ```
 
-this to your crate root:
+this to your crate root (not necessary when your project is Rust 2018 edition):
 
 ```rust
 extern crate ip_network;
@@ -48,4 +48,4 @@ assert_eq!(table.insert(network.clone(), "foo"), None);
 assert_eq!(table.longest_match(ip_address), Some((network, &"foo")));
 ```
 
-Minimal required version of Rust compiler is 1.26 (because of `ip_network` crate). 
+Minimal required version of Rust compiler is 1.31 (because of `ip_network` crate). 
