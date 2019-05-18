@@ -24,7 +24,6 @@ before_script:
       export PATH=$HOME/.cargo/bin:$PATH
 
 script:
-  - cargo check
   - cargo test
 
 after_success:
