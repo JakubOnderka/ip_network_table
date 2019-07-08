@@ -25,6 +25,7 @@ use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 use treebitmap::IpLookupTable;
 
 /// Table holding IPv4 and IPv6 network prefixes with value.
+#[derive(Default)]
 pub struct IpNetworkTable<T> {
     ipv4: IpLookupTable<Ipv4Addr, T>,
     ipv6: IpLookupTable<Ipv6Addr, T>,
