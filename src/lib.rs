@@ -50,6 +50,11 @@ impl<T> IpNetworkTable<T> {
         (self.ipv4.len(), self.ipv6.len())
     }
 
+    /// Returns `true` if table is empty.
+    pub fn is_empty(&self) -> bool {
+        self.ipv4.is_empty() && self.ipv6.is_empty()
+    }
+
     /// Insert a value for the `IpNetwork`. If prefix existed previously, the old value is returned.
     ///
     /// # Examples
