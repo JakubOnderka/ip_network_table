@@ -1,8 +1,4 @@
-#[macro_use]
-extern crate criterion;
-
-use criterion::black_box;
-use criterion::Criterion;
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use ip_network::{Ipv4Network, Ipv6Network};
 use ip_network_table::IpNetworkTable;
 use std::net::{Ipv4Addr, Ipv6Addr};
