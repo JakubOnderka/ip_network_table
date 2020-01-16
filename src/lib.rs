@@ -20,6 +20,8 @@
 //! assert_eq!(table.longest_match(ip_address), Some((network, &"foo")));
 //! ```
 
+#![warn(rust_2018_idioms)]
+
 use ip_network::{IpNetwork, Ipv4Network, Ipv6Network};
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 use treebitmap::IpLookupTable;
@@ -217,7 +219,7 @@ impl<T> IpNetworkTable<T> {
     /// assert_eq!(iterator.next(), Some((IpNetwork::V6(network_b), &"foo")));
     /// assert_eq!(iterator.next(), None);
     /// ```
-    pub fn iter(&self) -> Iter<T> {
+    pub fn iter(&self) -> Iter<'_, T> {
         Iter {
             ipv4: self.ipv4.iter(),
             ipv6: self.ipv6.iter(),
@@ -226,7 +228,7 @@ impl<T> IpNetworkTable<T> {
 }
 
 /// Table iterator.
-pub struct Iter<'a, T: 'a> {
+pub struct Iter<'a, T> {
     ipv4: treebitmap::Iter<'a, Ipv4Addr, T>,
     ipv6: treebitmap::Iter<'a, Ipv6Addr, T>,
 }
