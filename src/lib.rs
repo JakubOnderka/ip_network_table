@@ -172,7 +172,7 @@ impl<T> IpNetworkTable<T> {
     /// // Get value for network from table
     /// assert_eq!(table.longest_match(ip_address), Some((network, &"foo")));
     /// ```
-    pub fn longest_match<A: Into<IpAddr>>(&self, ip: A) -> Option<(IpNetwork, &T)> {
+    pub fn longest_match<I: Into<IpAddr>>(&self, ip: I) -> Option<(IpNetwork, &T)> {
         match ip.into() {
             IpAddr::V4(ipv4) => self
                 .longest_match_ipv4(ipv4)
