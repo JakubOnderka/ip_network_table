@@ -219,31 +219,15 @@ impl<T> IpNetworkTable<T> {
     /// assert_eq!(iterator.next(), Some((IpNetwork::V6(network_b), &"foo")));
     /// assert_eq!(iterator.next(), None);
     /// ```
-    pub fn iter(&self) -> Iter<'_, T> {
-        Iter {
-            ipv4: self.ipv4.iter(),
-            ipv6: self.ipv6.iter(),
-        }
-    }
-}
-
-/// Table iterator.
-pub struct Iter<'a, T> {
-    ipv4: treebitmap::Iter<'a, Ipv4Addr, T>,
-    ipv6: treebitmap::Iter<'a, Ipv6Addr, T>,
-}
-
-impl<'a, T> Iterator for Iter<'a, T> {
-    type Item = (IpNetwork, &'a T);
-
-    fn next(&mut self) -> Option<Self::Item> {
-        match self.ipv4.next() {
-            Some((addr, mask, data)) => Some((IpNetwork::new(addr, mask as u8).unwrap(), data)),
-            None => self
-                .ipv6
-                .next()
-                .map(|(addr, mask, data)| (IpNetwork::new(addr, mask as u8).unwrap(), data)),
-        }
+    pub fn iter(&self) -> impl Iterator<Item = (IpNetwork, &T)> {
+        self.ipv4
+            .iter()
+            .map(|(addr, mask, data)| (IpNetwork::new(addr, mask as u8).unwrap(), data))
+            .chain(
+                self.ipv6
+                    .iter()
+                    .map(|(addr, mask, data)| (IpNetwork::new(addr, mask as u8).unwrap(), data)),
+            )
     }
 }
 
