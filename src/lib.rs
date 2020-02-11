@@ -275,6 +275,44 @@ impl<T> IpNetworkTable<T> {
             .iter()
             .map(|(addr, mask, data)| (Ipv6Network::new(addr, mask as u8).unwrap(), data))
     }
+
+    /// Retains only the elements specified by the predicate.
+    ///
+    /// In other words, remove all pairs `(k, v)` such that `f(ip_network, &mut v)` returns `false`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ip_network_table::IpNetworkTable;
+    /// use ip_network::{IpNetwork, Ipv4Network, Ipv6Network};
+    /// use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+    ///
+    /// let mut table: IpNetworkTable<&str> = IpNetworkTable::new();
+    /// let network_a = Ipv4Network::new(Ipv4Addr::new(192, 168, 0, 0), 24).unwrap();
+    /// assert_eq!(table.insert(network_a, "foo"), None);
+    /// let network_b = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
+    /// assert_eq!(table.insert(network_b, "foo"), None);
+    ///
+    /// // Keep just IPv4 networks
+    /// table.retain(|network, _| network.is_ipv4());
+    ///
+    /// assert_eq!(table.exact_match(network_a), Some(&"foo"));
+    /// assert_eq!(table.exact_match(network_b), None);
+    /// ```
+    pub fn retain<F>(&mut self, mut f: F)
+    where
+        F: FnMut(IpNetwork, &mut T) -> bool,
+    {
+        let mut to_delete = vec![];
+        for (network, data) in self.iter_mut() {
+            if !f(network, data) {
+                to_delete.push(network);
+            }
+        }
+        for network in to_delete {
+            self.remove(network);
+        }
+    }
 }
 
 #[cfg(test)]
