@@ -15,7 +15,7 @@
 //! let network = IpNetwork::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
 //! let ip_address = Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0x1);
 //!
-//! assert_eq!(table.insert(network.clone(), "foo"), None);
+//! assert_eq!(table.insert(network, "foo"), None);
 //! // Get value for network from table
 //! assert_eq!(table.longest_match(ip_address), Some((network, &"foo")));
 //! ```
@@ -69,9 +69,9 @@ impl<T> IpNetworkTable<T> {
     /// let mut table: IpNetworkTable<&str> = IpNetworkTable::new();
     /// let network = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
     ///
-    /// assert_eq!(table.insert(network.clone(), "foo"), None);
+    /// assert_eq!(table.insert(network, "foo"), None);
     /// // Insert duplicate
-    /// assert_eq!(table.insert(network.clone(), "bar"), Some("foo"));
+    /// assert_eq!(table.insert(network, "bar"), Some("foo"));
     /// // Value is replaced
     /// assert_eq!(table.insert(network, "null"), Some("bar"));
     /// ```
@@ -102,9 +102,9 @@ impl<T> IpNetworkTable<T> {
     /// let mut table: IpNetworkTable<&str> = IpNetworkTable::new();
     /// let network = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
     ///
-    /// assert_eq!(table.insert(network.clone(), "foo"), None);
+    /// assert_eq!(table.insert(network, "foo"), None);
     /// // Remove network from table
-    /// assert_eq!(table.remove(network.clone()), Some("foo"));
+    /// assert_eq!(table.remove(network), Some("foo"));
     /// // Network is removed
     /// assert_eq!(table.exact_match(network), None);
     /// ```
@@ -135,9 +135,9 @@ impl<T> IpNetworkTable<T> {
     /// let network_a = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
     /// let network_b = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 128).unwrap();
     ///
-    /// assert_eq!(table.insert(network_a.clone(), "foo"), None);
+    /// assert_eq!(table.insert(network_a, "foo"), None);
     /// // Get value for network from table
-    /// assert_eq!(table.exact_match(network_a.clone()), Some(&"foo"));
+    /// assert_eq!(table.exact_match(network_a), Some(&"foo"));
     /// // Network B doesnt exists in table
     /// assert_eq!(table.exact_match(network_b), None);
     /// ```
@@ -168,7 +168,7 @@ impl<T> IpNetworkTable<T> {
     /// let network = IpNetwork::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
     /// let ip_address = Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0x1);
     ///
-    /// assert_eq!(table.insert(network.clone(), "foo"), None);
+    /// assert_eq!(table.insert(network, "foo"), None);
     /// // Get value for network from table
     /// assert_eq!(table.longest_match(ip_address), Some((network, &"foo")));
     /// ```
@@ -210,9 +210,9 @@ impl<T> IpNetworkTable<T> {
     ///
     /// let mut table: IpNetworkTable<&str> = IpNetworkTable::new();
     /// let network_a = Ipv4Network::new(Ipv4Addr::new(192, 168, 0, 0), 24).unwrap();
-    /// assert_eq!(table.insert(network_a.clone(), "foo"), None);
+    /// assert_eq!(table.insert(network_a, "foo"), None);
     /// let network_b = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
-    /// assert_eq!(table.insert(network_b.clone(), "foo"), None);
+    /// assert_eq!(table.insert(network_b, "foo"), None);
     ///
     /// let mut iterator = table.iter();
     /// assert_eq!(iterator.next(), Some((IpNetwork::V4(network_a), &"foo")));
