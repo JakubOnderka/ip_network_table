@@ -220,14 +220,60 @@ impl<T> IpNetworkTable<T> {
     /// assert_eq!(iterator.next(), None);
     /// ```
     pub fn iter(&self) -> impl Iterator<Item = (IpNetwork, &T)> {
+        self.iter_ipv4()
+            .map(|(network, data)| (IpNetwork::V4(network), data))
+            .chain(
+                self.iter_ipv6()
+                    .map(|(network, data)| (IpNetwork::V6(network), data)),
+            )
+    }
+
+    /// Mutable iterator for all networks in table, first are iterated IPv4 and then IPv6 networks. Order is not guaranteed.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ip_network_table::IpNetworkTable;
+    /// use ip_network::{IpNetwork, Ipv4Network, Ipv6Network};
+    /// use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+    ///
+    /// let mut table: IpNetworkTable<&str> = IpNetworkTable::new();
+    /// let network_a = Ipv4Network::new(Ipv4Addr::new(192, 168, 0, 0), 24).unwrap();
+    /// assert_eq!(table.insert(network_a, "foo"), None);
+    /// let network_b = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
+    /// assert_eq!(table.insert(network_b, "foo"), None);
+    ///
+    /// let mut iterator = table.iter_mut();
+    /// for (network, value) in iterator {
+    ///    *value = "bar";
+    /// }
+    ///
+    /// assert_eq!(table.exact_match(network_a), Some(&"bar"));
+    /// assert_eq!(table.exact_match(network_b), Some(&"bar"));
+    /// ```
+    pub fn iter_mut(&mut self) -> impl Iterator<Item = (IpNetwork, &mut T)> {
         self.ipv4
-            .iter()
+            .iter_mut()
             .map(|(addr, mask, data)| (IpNetwork::new(addr, mask as u8).unwrap(), data))
             .chain(
                 self.ipv6
-                    .iter()
+                    .iter_mut()
                     .map(|(addr, mask, data)| (IpNetwork::new(addr, mask as u8).unwrap(), data)),
             )
+    }
+
+    /// Iterator for all IPv4 networks in table. Order is not guaranteed.
+    pub fn iter_ipv4(&self) -> impl Iterator<Item = (Ipv4Network, &T)> {
+        self.ipv4
+            .iter()
+            .map(|(addr, mask, data)| (Ipv4Network::new(addr, mask as u8).unwrap(), data))
+    }
+
+    /// Iterator for all IPv6 networks in table. Order is not guaranteed.
+    pub fn iter_ipv6(&self) -> impl Iterator<Item = (Ipv6Network, &T)> {
+        self.ipv6
+            .iter()
+            .map(|(addr, mask, data)| (Ipv6Network::new(addr, mask as u8).unwrap(), data))
     }
 }
 
