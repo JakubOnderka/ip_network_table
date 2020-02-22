@@ -20,7 +20,7 @@ maintenance = { status = "actively-developed" }
 
 [dependencies]
 ip_network = "0.3.0"
-treebitmap = "0.4.0"
+treebitmap = { path = "treebitmap" }
 
 [dev-dependencies]
 criterion = "0.3.0"

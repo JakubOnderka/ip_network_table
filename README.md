@@ -12,8 +12,8 @@ IPv4 and IPv6 network fast lookup table.
 ## Description
 This crate provides storage and retrieval of IPv4 and IPv6 network prefixes.
 
-Currently, it uses [`ip_network`](https://github.com/JakubOnderka/ip_network) crate, that provides IP network data structure and
- [`treebitmap`](https://github.com/hroi/treebitmap) as backend, that provides fast lookup times, and a small memory footprint. Backend can be changed in future releases.
+Currently, it uses [`ip_network`](https://github.com/JakubOnderka/ip_network) crate, that provides IP network data structure and fork of
+ [`treebitmap`](https://github.com/hroi/treebitmap) ([fork](https://github.com/JakubOnderka/treebitmap)) as backend, that provides fast lookup times, and a small memory footprint. Backend can be changed in future releases.
 
 ## Usage
 
