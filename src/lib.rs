@@ -216,6 +216,41 @@ impl<T> IpNetworkTable<T> {
         }
     }
 
+    /// Find most specific IP network in table that contains given IP address. If no network in table contains
+    /// given IP address, `None` is returned.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ip_network_table::IpNetworkTable;
+    /// use ip_network::{IpNetwork, Ipv6Network};
+    /// use std::net::Ipv6Addr;
+    ///
+    /// let mut table: IpNetworkTable<&str> = IpNetworkTable::new();
+    /// let network = IpNetwork::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
+    /// let ip_address = Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0x1);
+    ///
+    /// assert_eq!(table.insert(network, "foo"), None);
+    /// // Get value for network from table
+    /// assert_eq!(table.longest_match_mut(ip_address), Some((network, &mut "foo")));
+    /// ```
+    pub fn longest_match_mut<I: Into<IpAddr>>(&mut self, ip: I) -> Option<(IpNetwork, &mut T)> {
+        match ip.into() {
+            IpAddr::V4(ipv4) => self.ipv4.longest_match_mut(ipv4).map(|(addr, mask, data)| {
+                (
+                    IpNetwork::V4(Ipv4Network::new(addr, mask as u8).unwrap()),
+                    data,
+                )
+            }),
+            IpAddr::V6(ipv6) => self.ipv6.longest_match_mut(ipv6).map(|(addr, mask, data)| {
+                (
+                    IpNetwork::V6(Ipv6Network::new(addr, mask as u8).unwrap()),
+                    data,
+                )
+            }),
+        }
+    }
+
     /// Specific version of `longest_match` for IPv4 address.
     #[inline]
     pub fn longest_match_ipv4(&self, ip: Ipv4Addr) -> Option<(Ipv4Network, &T)> {
