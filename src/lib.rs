@@ -154,6 +154,39 @@ impl<T> IpNetworkTable<T> {
         }
     }
 
+    /// Get mutable pointer to value from table based on exact network match.
+    /// If network is not in table, `None` is returned.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ip_network_table::IpNetworkTable;
+    /// use ip_network::Ipv6Network;
+    /// use std::net::Ipv6Addr;
+    ///
+    /// let mut table: IpNetworkTable<&str> = IpNetworkTable::new();
+    /// let network_a = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
+    /// let network_b = Ipv6Network::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 128).unwrap();
+    ///
+    /// assert_eq!(table.insert(network_a, "foo"), None);
+    /// // Get value for network from table
+    /// assert_eq!(table.exact_match_mut(network_a), Some(&mut "foo"));
+    /// // Network B doesnt exists in table
+    /// assert_eq!(table.exact_match(network_b), None);
+    /// ```
+    pub fn exact_match_mut<N: Into<IpNetwork>>(&mut self, network: N) -> Option<&mut T> {
+        match network.into() {
+            IpNetwork::V4(ipv4_network) => self.ipv4.exact_match_mut(
+                ipv4_network.network_address(),
+                ipv4_network.netmask() as u32,
+            ),
+            IpNetwork::V6(ipv6_network) => self.ipv6.exact_match_mut(
+                ipv6_network.network_address(),
+                ipv6_network.netmask() as u32,
+            ),
+        }
+    }
+
     /// Find most specific IP network in table that contains given IP address. If no network in table contains
     /// given IP address, `None` is returned.
     ///
