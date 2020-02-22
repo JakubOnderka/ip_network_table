@@ -267,6 +267,104 @@ impl<T> IpNetworkTable<T> {
             .map(|(addr, mask, data)| (Ipv6Network::new(addr, mask as u8).unwrap(), data))
     }
 
+    /// Find all IP networks in table that contains given IP address.
+    /// Returns iterator of IpNetwork and reference to value.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ip_network_table::IpNetworkTable;
+    /// use ip_network::{IpNetwork, Ipv6Network};
+    /// use std::net::Ipv6Addr;
+    ///
+    /// let mut table: IpNetworkTable<&str> = IpNetworkTable::new();
+    /// let network = IpNetwork::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
+    /// let ip_address = Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0x1);
+    ///
+    /// assert_eq!(table.insert(network, "foo"), None);
+    /// // Get value for network from table
+    /// assert_eq!(table.matches(ip_address).count(), 1);
+    /// ```
+    pub fn matches<I: Into<IpAddr>>(
+        &self,
+        ip: I,
+    ) -> Box<dyn Iterator<Item = (IpNetwork, &T)> + '_> {
+        match ip.into() {
+            IpAddr::V4(ipv4) => Box::new(
+                self.matches_ipv4(ipv4)
+                    .map(|(network, data)| (IpNetwork::V4(network), data)),
+            ),
+            IpAddr::V6(ipv6) => Box::new(
+                self.matches_ipv6(ipv6)
+                    .map(|(network, data)| (IpNetwork::V6(network), data)),
+            ),
+        }
+    }
+
+    /// Specific version of `matches` for IPv4 address.
+    pub fn matches_ipv4(&self, ip: Ipv4Addr) -> impl Iterator<Item = (Ipv4Network, &T)> {
+        self.ipv4
+            .matches(ip)
+            .map(|(addr, mask, data)| (Ipv4Network::new(addr, mask as u8).unwrap(), data))
+    }
+
+    /// Specific version of `matches` for IPv6 address.
+    pub fn matches_ipv6(&self, ip: Ipv6Addr) -> impl Iterator<Item = (Ipv6Network, &T)> {
+        self.ipv6
+            .matches(ip)
+            .map(|(addr, mask, data)| (Ipv6Network::new(addr, mask as u8).unwrap(), data))
+    }
+
+    /// Find all IP networks in table that contains given IP address.
+    /// Returns iterator of IpNetwork and mutable reference to value.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ip_network_table::IpNetworkTable;
+    /// use ip_network::{IpNetwork, Ipv6Network};
+    /// use std::net::{IpAddr, Ipv6Addr};
+    ///
+    /// let mut table: IpNetworkTable<&str> = IpNetworkTable::new();
+    /// let network = IpNetwork::new(Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0), 64).unwrap();
+    /// let ip_address = Ipv6Addr::new(0x2001, 0xdb8, 0xdead, 0xbeef, 0, 0, 0, 0x1);
+    ///
+    /// assert_eq!(table.insert(network, "foo"), None);
+    /// // Get value for network from table
+    /// assert_eq!(table.matches_mut(ip_address).count(), 1);
+    /// ```
+    pub fn matches_mut<I: Into<IpAddr>>(
+        &mut self,
+        ip: I,
+    ) -> Box<dyn Iterator<Item = (IpNetwork, &mut T)> + '_> {
+        match ip.into() {
+            IpAddr::V4(ipv4) => Box::new(
+                self.matches_mut_ipv4(ipv4)
+                    .map(|(network, data)| (IpNetwork::V4(network), data)),
+            ),
+            IpAddr::V6(ipv6) => Box::new(
+                self.matches_mut_ipv6(ipv6)
+                    .map(|(network, data)| (IpNetwork::V6(network), data)),
+            ),
+        }
+    }
+
+    /// Specific version of `matches_mut` for IPv4 address.
+    #[inline]
+    pub fn matches_mut_ipv4(&mut self, ip: Ipv4Addr) -> impl Iterator<Item = (Ipv4Network, &mut T)> {
+        self.ipv4
+            .matches_mut(ip)
+            .map(|(addr, mask, data)| (Ipv4Network::new(addr, mask as u8).unwrap(), data))
+    }
+
+    /// Specific version of `matches_mut` for IPv6 address.
+    #[inline]
+    pub fn matches_mut_ipv6(&mut self, ip: Ipv6Addr) -> impl Iterator<Item = (Ipv6Network, &mut T)> {
+        self.ipv6
+            .matches_mut(ip)
+            .map(|(addr, mask, data)| (Ipv6Network::new(addr, mask as u8).unwrap(), data))
+    }
+
     /// Iterator for all networks in table, first are iterated IPv4 and then IPv6 networks. Order is not guaranteed.
     ///
     /// # Examples
@@ -424,11 +522,14 @@ mod tests {
             Ipv6Network::new(Ipv6Addr::new(1, 2, 3, 4, 5, 6, 7, 8), 127).unwrap(),
             1,
         );
-        let m = table.exact_match(Ipv6Network::new(Ipv6Addr::new(1, 2, 3, 4, 5, 6, 7, 8), 127).unwrap());
+        let m = table
+            .exact_match(Ipv6Network::new(Ipv6Addr::new(1, 2, 3, 4, 5, 6, 7, 8), 127).unwrap());
         assert_eq!(m, Some(&1));
-        let m = table.exact_match(Ipv6Network::new(Ipv6Addr::new(1, 2, 3, 4, 5, 6, 7, 8), 128).unwrap());
+        let m = table
+            .exact_match(Ipv6Network::new(Ipv6Addr::new(1, 2, 3, 4, 5, 6, 7, 8), 128).unwrap());
         assert_eq!(m, None);
-        let m = table.exact_match(Ipv6Network::new(Ipv6Addr::new(1, 2, 3, 4, 5, 6, 7, 8), 126).unwrap());
+        let m = table
+            .exact_match(Ipv6Network::new(Ipv6Addr::new(1, 2, 3, 4, 5, 6, 7, 8), 126).unwrap());
         assert_eq!(m, None);
     }
 }
