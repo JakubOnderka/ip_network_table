@@ -47,7 +47,7 @@ impl<T> IpNetworkTable<T> {
         }
     }
 
-    /// Returns the number of elements in the table.
+    /// Returns the number of elements in the table. First value is number of IPv4 networks and second is number of IPv6 networks.
     pub fn len(&self) -> (usize, usize) {
         (self.ipv4.len(), self.ipv6.len())
     }
