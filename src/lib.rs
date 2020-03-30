@@ -24,7 +24,7 @@
 
 use ip_network::{IpNetwork, Ipv4Network, Ipv6Network};
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
-use treebitmap::IpLookupTable;
+use ip_network_table_deps_treebitmap::IpLookupTable; // forked from `treebitmap`
 
 /// Table holding IPv4 and IPv6 network prefixes with value.
 #[derive(Default)]
