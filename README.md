@@ -3,13 +3,13 @@ ip_network_table
 
 IPv4 and IPv6 network fast lookup table.
 
+[![Documentation](https://docs.rs/ip_network_table/badge.svg)](https://docs.rs/ip_network_table)
 [![Build Status](https://travis-ci.org/JakubOnderka/ip_network_table.svg?branch=master)](https://travis-ci.org/JakubOnderka/ip_network_table)
 [![Coverage Status](https://coveralls.io/repos/github/JakubOnderka/ip_network_table/badge.svg?branch=master)](https://coveralls.io/github/JakubOnderka/ip_network_table?branch=master)
 [![Crates.io](https://img.shields.io/crates/v/ip_network_table.svg)](https://crates.io/crates/ip_network_table)
 
-- [Documentation](https://docs.rs/ip_network_table)
-
 ## Description
+
 This crate provides storage and retrieval of IPv4 and IPv6 network prefixes.
 
 Currently, it uses [`ip_network`](https://github.com/JakubOnderka/ip_network) crate, that provides IP network data structure and fork of
@@ -21,7 +21,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-ip_network = "0.3"
+ip_network = "0.4"
 ip_network_table = "0.1"
 ```
 
