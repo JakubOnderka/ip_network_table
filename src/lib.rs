@@ -23,8 +23,8 @@
 #![warn(rust_2018_idioms)]
 
 use ip_network::{IpNetwork, Ipv4Network, Ipv6Network};
-use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
-use ip_network_table_deps_treebitmap::IpLookupTable; // forked from `treebitmap`
+use ip_network_table_deps_treebitmap::IpLookupTable;
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr}; // forked from `treebitmap`
 
 /// Table holding IPv4 and IPv6 network prefixes with value.
 #[derive(Default)]
