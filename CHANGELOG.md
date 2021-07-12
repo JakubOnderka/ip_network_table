@@ -1,3 +1,6 @@
+## Version 0.2.0
+* Update `ip_network` crate to 0.4.0
+
 ## Version 0.1.2
 
 * Used [fork](https://github.com/JakubOnderka/treebitmap) of treebitmap, that allows to implement new
