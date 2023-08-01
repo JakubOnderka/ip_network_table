@@ -24,8 +24,10 @@
     html_logo_url = "https://raw.githubusercontent.com/bgpkit/assets/main/logos/icon-transparent.png",
     html_favicon_url = "https://raw.githubusercontent.com/bgpkit/assets/main/logos/favicon.ico"
 )]
+
 use ip_network_table_deps_treebitmap::IpLookupTable;
 use ipnet::{IpNet, Ipv4Net, Ipv6Net};
+use std::collections::HashSet;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 /// Table holding IPv4 and IPv6 network prefixes with value.
@@ -57,6 +59,87 @@ impl<T> IpnetTrie<T> {
     /// Returns `true` if table is empty.
     pub fn is_empty(&self) -> bool {
         self.ipv4.is_empty() && self.ipv6.is_empty()
+    }
+
+    /// Count the number of unique IPv4 and IPv6 addresses in the trie.
+    ///
+    /// ```rust
+    /// use std::str::FromStr;
+    /// use ipnet::{Ipv4Net, Ipv6Net};
+    /// use ipnet_trie::IpnetTrie;
+    ///
+    /// let mut table = IpnetTrie::new();
+    /// table.insert(Ipv4Net::from_str("192.0.2.129/25").unwrap(), 1);
+    /// table.insert(Ipv4Net::from_str("192.0.2.0/24").unwrap(), 1);
+    /// table.insert(Ipv4Net::from_str("192.0.2.0/24").unwrap(), 1);
+    /// table.insert(Ipv4Net::from_str("192.0.2.0/24").unwrap(), 1);
+    /// assert_eq!(table.ip_count(), (256, 0));
+    ///
+    /// table.insert(Ipv4Net::from_str("198.51.100.0/25").unwrap(), 1);
+    /// table.insert(Ipv4Net::from_str("198.51.100.64/26").unwrap(), 1);
+    /// assert_eq!(table.ip_count(), (384, 0));
+    ///
+    /// table.insert(Ipv4Net::from_str("198.51.100.65/26").unwrap(), 1);
+    /// assert_eq!(table.ip_count(), (384, 0));
+    ///
+    /// table.insert(Ipv6Net::from_str("2001:DB80::/48").unwrap(), 1);
+    /// assert_eq!(table.ip_count(), (384, 2_u128.pow(80)));
+    /// table.insert(Ipv6Net::from_str("2001:DB80::/49").unwrap(), 1);
+    /// assert_eq!(table.ip_count(), (384, 2_u128.pow(80)));
+    /// ```
+    pub fn ip_count(&self) -> (u32, u128) {
+        let mut seen_ipv4_ips: HashSet<Ipv4Addr> = HashSet::new();
+        let mut root_ipv4_prefixes: HashSet<Ipv4Net> = HashSet::new();
+
+        for (ip, _len, _) in self.ipv4.iter() {
+            if seen_ipv4_ips.contains(&ip) {
+                continue;
+            }
+            let root_prefix: Ipv4Net = *self
+                .ipv4
+                .matches(ip)
+                .map(|(ip, prefix, _data)| {
+                    seen_ipv4_ips.insert(ip);
+                    Ipv4Net::new(ip, prefix as u8).unwrap()
+                })
+                .collect::<Vec<Ipv4Net>>()
+                .first()
+                .unwrap();
+
+            root_ipv4_prefixes.insert(root_prefix);
+        }
+
+        let mut seen_ipv6_ips: HashSet<Ipv6Addr> = HashSet::new();
+        let mut root_ipv6_prefixes: HashSet<Ipv6Net> = HashSet::new();
+        for (ip, _len, _) in self.ipv6.iter() {
+            if seen_ipv6_ips.contains(&ip) {
+                continue;
+            }
+            let root_prefix: Ipv6Net = *self
+                .ipv6
+                .matches(ip)
+                .map(|(ip, prefix, _data)| {
+                    seen_ipv6_ips.insert(ip);
+                    Ipv6Net::new(ip, prefix as u8).unwrap()
+                })
+                .collect::<Vec<Ipv6Net>>()
+                .first()
+                .unwrap();
+
+            root_ipv6_prefixes.insert(root_prefix);
+        }
+
+        let mut ipv4_space: u32 = 0;
+        let mut ipv6_space: u128 = 0;
+
+        for prefix in root_ipv4_prefixes {
+            ipv4_space += 2u32.pow(32 - prefix.prefix_len() as u32);
+        }
+        for prefix in root_ipv6_prefixes {
+            ipv6_space += 2u128.pow(128 - prefix.prefix_len() as u32);
+        }
+
+        (ipv4_space, ipv6_space)
     }
 
     /// Insert a value for the `IpNetwork`. If prefix existed previously, the old value is returned.
@@ -471,6 +554,7 @@ mod tests {
     use crate::IpnetTrie;
     use ipnet::{Ipv4Net, Ipv6Net};
     use std::net::{Ipv4Addr, Ipv6Addr};
+    use std::str::FromStr;
 
     #[test]
     fn insert_ipv4_ipv6() {
@@ -510,5 +594,27 @@ mod tests {
         let m =
             table.exact_match(Ipv6Net::new(Ipv6Addr::new(1, 2, 3, 4, 5, 6, 7, 8), 126).unwrap());
         assert_eq!(m, None);
+    }
+
+    #[test]
+    fn test_ip_count() {
+        let mut table = IpnetTrie::new();
+        table.insert(Ipv4Net::from_str("192.0.2.129/25").unwrap(), 1);
+        table.insert(Ipv4Net::from_str("192.0.2.0/24").unwrap(), 1);
+        table.insert(Ipv4Net::from_str("192.0.2.0/24").unwrap(), 1);
+        table.insert(Ipv4Net::from_str("192.0.2.0/24").unwrap(), 1);
+        assert_eq!(table.ip_count(), (256, 0));
+
+        table.insert(Ipv4Net::from_str("198.51.100.0/25").unwrap(), 1);
+        table.insert(Ipv4Net::from_str("198.51.100.64/26").unwrap(), 1);
+        assert_eq!(table.ip_count(), (384, 0));
+
+        table.insert(Ipv4Net::from_str("198.51.100.65/26").unwrap(), 1);
+        assert_eq!(table.ip_count(), (384, 0));
+
+        table.insert(Ipv6Net::from_str("2001:DB80::/48").unwrap(), 1);
+        assert_eq!(table.ip_count(), (384, 2_u128.pow(80)));
+        table.insert(Ipv6Net::from_str("2001:DB80::/49").unwrap(), 1);
+        assert_eq!(table.ip_count(), (384, 2_u128.pow(80)));
     }
 }
