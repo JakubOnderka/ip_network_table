@@ -1,28 +1,25 @@
 [package]
-name = "ip_network_table"
-version = "0.2.0"
-authors = ["Jakub Onderka <ahoj@jakubonderka.cz>"]
+name = "ipnet-trie"
+version = "0.0.1"
+authors = ["Mingwei Zhang <mingwei@bgpkit.com>", "Jakub Onderka <ahoj@jakubonderka.cz>"]
 license = "BSD-2-Clause"
-keywords = ["ip", "ipv4", "ipv6", "network", "address"]
+keywords = ["ip", "network", "address", "bgp", "trie"]
 categories = ["network-programming", "data-structures"]
 readme = "README.md"
-repository = "https://github.com/JakubOnderka/ip_network_table"
-homepage = "https://github.com/JakubOnderka/ip_network_table"
-documentation = "https://docs.rs/ip_network_table"
+repository = "https://github.com/bgpkit/ipnet-trie"
+homepage = "https://github.com/bgpkit/ipnet-trie"
+documentation = "https://docs.rs/ipnet-trie"
 description = """
-IPv4 and IPv6 network fast lookup table.
+IPv4 and IPv6 network fast lookup trie.
 """
-edition = "2018"
-
-[badges]
-maintenance = { status = "actively-developed" }
+edition = "2021"
 
 [dependencies]
-ip_network = "0.4.0"
-ip_network_table-deps-treebitmap = "0.5.0"
+ipnet = "2.8"
+ip_network_table-deps-treebitmap = "0.5"
 
 [dev-dependencies]
-criterion = "0.3.0"
+criterion = "0.5"
 
 [[bench]]
 name = "benchmark"
