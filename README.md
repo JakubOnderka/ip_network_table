@@ -1,7 +1,7 @@
-ip_network_table
+ipnet-trie
 ========
 
-IPv4 and IPv6 network fast lookup table.
+IPv4 and IPv6 network fast lookup prefix trie.
 
 [![Rust](https://github.com/bgpkit/ipnet-trie/actions/workflows/rust.yml/badge.svg)](https://github.com/bgpkit/ipnet-trie/actions/workflows/rust.yml)
 [![Documentation](https://docs.rs/ipnet-trie/badge.svg)](https://docs.rs/ipnet-trie)
