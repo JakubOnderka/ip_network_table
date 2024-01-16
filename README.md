@@ -17,6 +17,10 @@ Currently, it uses [`ipnet`](https://docs.rs/ipnet/latest/ipnet/) crate as IP ne
  [`treebitmap`](https://github.com/hroi/treebitmap) ([fork](https://github.com/JakubOnderka/treebitmap)) as backend, 
 that provides fast lookup times, and a small memory footprint. Backend can be changed in future releases.
 
+## Feature flags
+
+- `export`: enable export trie into bytes or to a writer and import from bytes or from a reader.
+
 ## Usage
 
 Add this to your `Cargo.toml`:
@@ -24,7 +28,7 @@ Add this to your `Cargo.toml`:
 ```toml
 [dependencies]
 ipnet = "2.8"
-ipnet-trie = "0.0.1"
+ipnet-trie = "0.0.2"
 ```
 
 and then you can use it like this:

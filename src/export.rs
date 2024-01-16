@@ -54,6 +54,15 @@ impl From<PrefixLenError> for IpnetTrieError {
 }
 
 impl<T: Encode + Decode> IpnetTrie<T> {
+    /// Exports the contents of the `IpnetTrie` to a writer.
+    ///
+    /// # Arguments
+    ///
+    /// * `writer` - A mutable reference to a writer where the exported data will be written.
+    ///
+    /// # Errors
+    ///
+    /// Returns an `IpnetTrieError` if there is an error in encoding or writing the data.
     pub fn export_to_writer(&self, writer: &mut impl Write) -> Result<(), IpnetTrieError> {
         for (ipnet, value) in self.iter() {
             let bytes = encode_to_vec(
@@ -109,6 +118,15 @@ impl<T: Encode + Decode> IpnetTrie<T> {
         }
     }
 
+    /// Imports IP addresses and their corresponding values from a `Read` trait object.
+    ///
+    /// # Arguments
+    ///
+    /// * `reader` - A mutable reference to a `Read` trait object.
+    ///
+    /// # Errors
+    ///
+    /// Returns an `IpnetTrieError` if there is an error during the import process.
     pub fn import_from_reader(&mut self, reader: &mut impl Read) -> Result<(), IpnetTrieError> {
         loop {
             let (addr, prefix_len, value) =

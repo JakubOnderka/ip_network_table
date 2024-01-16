@@ -1,6 +1,6 @@
 //! This crate provides storage and retrieval of IPv4 and IPv6 network prefixes.
 //!
-//! Currently, it uses `ip_network` crate, that provides IP network data structure and
+//! Currently, it uses `ipnet` crate, that provides IP network data structure and
 //! `treebitmap` as backend, that provides fast lookup times, and a small memory footprint.
 //! Backend can be changed in future releases.
 //!
@@ -25,6 +25,10 @@
     html_favicon_url = "https://raw.githubusercontent.com/bgpkit/assets/main/logos/favicon.ico"
 )]
 
+
+#[cfg(feature = "export")]
+mod export;
+
 use ip_network_table_deps_treebitmap::IpLookupTable;
 use ipnet::{IpNet, Ipv4Net, Ipv6Net};
 use std::collections::HashSet;
@@ -38,12 +42,12 @@ pub struct IpnetTrie<T> {
 }
 
 impl<T> IpnetTrie<T> {
-    /// Constructs a new, empty `IpNetworkTable<T>`.
+    /// Constructs a new, empty `IpnetTrie<T>`.
     pub fn new() -> Self {
         Self::with_capacity(0, 0)
     }
 
-    /// Constructs a new, empty `IpNetworkTable<T>` with the specified capacity.
+    /// Constructs a new, empty `IpnetTrie<T>` with the specified capacity.
     pub fn with_capacity(ipv4_size: usize, ipv6_size: usize) -> Self {
         Self {
             ipv4: IpLookupTable::with_capacity(ipv4_size),
@@ -142,7 +146,7 @@ impl<T> IpnetTrie<T> {
         (ipv4_space, ipv6_space)
     }
 
-    /// Insert a value for the `IpNetwork`. If prefix existed previously, the old value is returned.
+    /// Insert a value for the `IpNet`. If prefix existed previously, the old value is returned.
     ///
     /// # Examples
     ///
@@ -175,7 +179,7 @@ impl<T> IpnetTrie<T> {
         }
     }
 
-    /// Remove a `IpNetwork` from table. If prefix existed, the value is returned.
+    /// Remove a `IpNet` from table. If prefix existed, the value is returned.
     ///
     /// # Examples
     ///
@@ -341,7 +345,7 @@ impl<T> IpnetTrie<T> {
     }
 
     /// Find all IP networks in table that contains given IP address.
-    /// Returns iterator of `IpNetwork` and reference to value.
+    /// Returns iterator of `IpNet` and reference to value.
     ///
     /// # Examples
     ///
@@ -386,7 +390,7 @@ impl<T> IpnetTrie<T> {
     }
 
     /// Find all IP networks in table that contains given IP address.
-    /// Returns iterator of `IpNetwork` and mutable reference to value.
+    /// Returns iterator of `IpNet` and mutable reference to value.
     ///
     /// # Examples
     ///

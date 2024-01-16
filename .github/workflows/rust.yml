@@ -20,6 +20,9 @@ jobs:
       - name: Build
         run: cargo build
 
+      - name: Build with export feature
+        run: cargo build --features export
+
       - name: Run tests
         run: cargo test
 
